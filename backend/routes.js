@@ -7,7 +7,6 @@ const Order = require('./controller/order');
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
 
-
 routes.get('/', (req,res)=>{
     
     console.log("teste");
@@ -16,7 +15,7 @@ routes.get('/', (req,res)=>{
     });
 })
 //Products
-routes.post('/createproduct', Product.createProduct);
+routes.post('/createproduct',  Product.createProduct);
 routes.get('/listproduct', Product.ListProduct);
 routes.delete('/deleteprodutc/:id', Product.DeleteProduct);
 routes.get('/showproduct/:id', Product.ShowProduct);

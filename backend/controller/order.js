@@ -57,49 +57,15 @@ const CreateOrder = {
     },
 
     async UpdateOrder(req, res) {
-        const { Products, Qtd, Owner, CashPayment, Boleto, NumberCreditCard, Cvv, QtdParcelas } = req.body;
-
-        const total = async () => {
-            // map -> retorna um array, pegando um array percorrendo ele e criando um outro array em cima dele;
-            // [] de promises;
-            
-            //passando o preço dos produtos no array de acordo com o ID da requisição.
-            const pricePromises = Products.map(async product => {
-                const { Price } = await Product.findById(product, 'Price');
-                return Price;
-            });
-            
-            const prices = await Promise.all(pricePromises); //tratando as promisses das funções async
-            const pricesResult = []; //vetor para armazenar os preços finais que serão multiplicados pelas quantidades declaradas na requisição 
-
-            //multiplicação das quantidades
-            for(let i=0; i<Qtd.length; i++){
-                const result = Qtd[i]*prices[i];
-                pricesResult.push(result);
-            }
-
-            //reduzindo os resultados em uma soma geral para formar o total do pedido
-            const reducer = (accumulator, currentvalue)=>accumulator+currentvalue;
-            return pricesResult.reduce(reducer);
-        }
-
-        const totalparcelas = CashPayment === true ? 1 : QtdParcelas;
+        const { Owner, NumberCreditCard, Total } = req.body;
 
         const order = await Order.findByIdAndUpdate( req.params.id, 
-            
             { 
-                Products, 
-                Qtd,
-                Total,
-                Owner,
-                NumberCreditCard,
-                CashPayment,
-                Boleto,
-                Total: await total(),
-                Cvv,
-                QtdParcelas : totalparcelas,
-                PrecoParcela: await total() / totalparcelas
-            }, 
+              Owner,
+              NumberCreditCard,
+              Total 
+            },
+
             { new: true });
             
         order.save((err, order)=> {
